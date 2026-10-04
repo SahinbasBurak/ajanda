@@ -1,4 +1,4 @@
-[README.md](https://github.com/user-attachments/files/33033946/README.md)
+
 # Ajanda: Kişi Tabanlı Randevu Takip Uygulaması
 
 Python ve Flask ile yazılmış, web tarayıcısında çalışan bir randevu ve ajanda uygulaması.
