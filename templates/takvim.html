@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block icerik %}
+<div class="ust">
+  <strong style="font-size:24px">{{ baslik }}</strong>
+  <span>
+    <a href="{{ url_for('takvim', ay=onceki) }}">Önceki ay</a> &nbsp;
+    <a href="{{ url_for('takvim') }}">Bu ay</a> &nbsp;
+    <a href="{{ url_for('takvim', ay=sonraki) }}">Sonraki ay</a>
+  </span>
+</div>
+<div class="izgara">
+  {% for g in gun_kisa %}<div class="gadi">{{ g }}</div>{% endfor %}
+  {% for hafta in haftalar %}{% for d in hafta %}
+  <div class="hucre {{ 'dis' if d.month != ay }} {{ 'bugun' if d == bugun }}" onclick="yeni('{{ d.isoformat() }}')">
+    <b>{{ d.day }}</b>
+    {% for k in gunluk.get(d, []) %}
+      <a class="olay {{ 'yapildi' if k.yapildi }}" href="{{ url_for('duzenle', eid=k.id) }}" onclick="detay(this, event)"
+         data-baslik="{{ k.baslik }}" data-tarih="{{ k.tarih.strftime('%d.%m.%Y') }}" data-saat="{{ k.saat or '' }}"
+         data-tekrar="{{ {'gunluk': 'Her gün', 'haftalik': 'Her hafta', 'aylik': 'Her ay'}.get(k.tekrar, '') }}"
+         data-kisi="{{ k.kisi_ad or '' }}" data-not="{{ k.not_metni or '' }}" data-yapildi="{{ 1 if k.yapildi else 0 }}"
+         data-duzenle="{{ url_for('duzenle', eid=k.id) }}"
+         data-tamam="{{ url_for('tamamla', eid=k.id, tarih=k.tarih.isoformat()) }}"
+         data-sil="{{ url_for('sil', eid=k.id) }}"
+         data-onay="{{ 'Tekrarlayan serinin tamamı silinsin mi?' if k.tekrar != 'yok' else 'Bu etkinlik silinsin mi?' }}"
+         style="--k:{{ kisi_renk(k.kisi_id) if k.kisi_id }}" title="{{ k.baslik }}">{{ k.saat or "" }} {{ k.baslik }}</a>
+    {% endfor %}
+  </div>
+  {% endfor %}{% endfor %}
+</div>
+<dialog id="detay">
+  <div style="padding:18px;display:grid;gap:10px">
+    <strong id="d-baslik" style="font-size:22px"></strong>
+    <div class="meta" id="d-zaman"></div>
+    <div class="meta" id="d-kisi"></div>
+    <div class="not" id="d-not"></div>
+    <div class="satir" style="margin-top:6px">
+      <a class="vazgec" id="d-duzenle" style="text-align:center;padding:9px;text-decoration:none">Düzenle</a>
+      <form class="satirici" id="d-tamam" method="post"><button class="vazgec" type="submit" style="width:100%;padding:9px"></button></form>
+    </div>
+    <div class="satir">
+      <form class="satirici" id="d-sil" method="post" onsubmit="return confirm(this.dataset.onay)">
+        <button class="vazgec" type="submit" style="width:100%;padding:9px;color:#b3261e;border-color:#b3261e">Sil</button>
+      </form>
+      <button class="vazgec" type="button" style="padding:9px" onclick="document.getElementById('detay').close()">Kapat</button>
+    </div>
+  </div>
+</dialog>
+<script>
+function detay(a, ev) {
+  ev.preventDefault();
+  ev.stopPropagation();
+  const d = a.dataset, g = id => document.getElementById(id);
+  g("d-baslik").textContent = d.baslik;
+  g("d-zaman").textContent = [d.tarih, d.saat, d.tekrar].filter(Boolean).join(" · ");
+  g("d-kisi").textContent = d.kisi ? "Kişi: " + d.kisi : "";
+  g("d-not").textContent = d.not || "";
+  g("d-duzenle").href = d.duzenle;
+  g("d-tamam").action = d.tamam;
+  g("d-tamam").querySelector("button").textContent = d.yapildi === "1" ? "Geri al" : "Tamamla";
+  g("d-sil").action = d.sil;
+  g("d-sil").dataset.onay = d.onay;
+  g("detay").showModal();
+}
+</script>
+{% endblock %}

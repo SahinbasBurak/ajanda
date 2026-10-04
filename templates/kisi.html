@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% macro satirlar(liste) %}
+  {% for r in liste %}
+  <article class="kayit {{ 'yapildi' if r.yapildi }}">
+    <span class="saat">{{ r.tarih.strftime("%d.%m.%Y") }}</span>
+    <div>
+      <div class="baslik">{{ r.saat or "" }} {{ r.baslik }} {% if r.durum %}<span class="etiket {{ 'gec' if r.durum == 'gelmedi' }} {{ 'iptal' if r.durum == 'iptal' }}">{{ durum_ad[r.durum] }}</span>{% endif %}</div>
+      {% if r.not_metni %}<div class="not">{{ r.not_metni }}</div>{% endif %}
+    </div>
+    <div class="islem"><a class="dugme" href="{{ url_for('duzenle', eid=r.id) }}">Düzenle</a></div>
+  </article>
+  {% else %}
+  <div class="bos">Kayıt yok.</div>
+  {% endfor %}
+{% endmacro %}
+{% block icerik %}
+<div class="ust">
+  <a href="{{ url_for('kisiler') }}">← Tüm kişiler</a>
+  <a href="{{ url_for('kisi_duzenle', kid=k.id) }}">Kişiyi düzenle</a>
+  <button class="yenibtn" onclick="yeni(null,{{ k.id }})">+ Bu kişiye randevu ekle</button>
+</div>
+<h1 style="font-size:36px;font-weight:900;margin:0;display:flex;align-items:center;gap:12px"><span class="avatar" style="background:{{ kisi_renk(k.id) }};width:48px;height:48px;font-size:18px">{{ bas_harf(k.ad) }}</span>{{ k.ad }}</h1>
+<p class="meta">{{ k.telefon or "Telefon yok" }}{% if k.eposta %} · {{ k.eposta }}{% endif %}{% if k.not_metni %}<br>{{ k.not_metni }}{% endif %}</p>
+{% if toplam %}<p class="meta">Geçmiş randevu: {{ toplam }} · Geldi: {{ sayac.geldi }} · Gelmedi: {{ sayac.gelmedi }} · İptal: {{ sayac.iptal }}</p>{% endif %}
+<section class="gun"><h2>Yaklaşan randevular <small>sonraki 1 yıl</small></h2>{{ satirlar(yaklasan) }}</section>
+<section class="gun gecti"><h2>Geçmiş randevular <small>en yeni önce</small></h2>{{ satirlar(gecmis) }}</section>
+{% endblock %}

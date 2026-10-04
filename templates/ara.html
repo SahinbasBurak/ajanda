@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block icerik %}
+<div class="ust"><strong>"{{ q }}" için arama sonuçları</strong></div>
+{% if not q %}<div class="bos">Üstteki arama kutusuna bir şey yazın.</div>{% else %}
+<section class="gun"><h2>Kişiler <small>{{ bulunan|length }} sonuç</small></h2>
+  {% for k in bulunan %}
+  <a class="kart" href="{{ url_for('kisi_detay', kid=k.id) }}">
+    <span class="avatar" style="background:{{ kisi_renk(k.id) }}">{{ bas_harf(k.ad) }}</span> <strong>{{ k.ad }}</strong>
+    <div class="meta">{{ k.telefon or "Telefon yok" }}{% if k.eposta %} · {{ k.eposta }}{% endif %}</div>
+  </a>
+  {% else %}<div class="bos">Eşleşen kişi yok.</div>{% endfor %}
+</section>
+<section class="gun"><h2>Randevular <small>{{ randevular|length }} sonuç</small></h2>
+  {% for e in randevular %}
+  <article class="kayit">
+    <span class="saat">{{ e.tarih[8:10] }}.{{ e.tarih[5:7] }}.{{ e.tarih[:4] }}</span>
+    <div>
+      <div class="baslik">{{ e.saat or "" }} {{ e.baslik }}</div>
+      <div class="meta">{{ e.kisi_ad or "Kişisiz" }}{% if e.tekrar != 'yok' %} · Tekrarlayan{% endif %}</div>
+    </div>
+    <div class="islem"><a class="dugme ikon" href="{{ url_for('duzenle', eid=e.id) }}" title="Düzenle" aria-label="Düzenle">✎</a></div>
+  </article>
+  {% else %}<div class="bos">Eşleşen randevu yok.</div>{% endfor %}
+</section>
+{% endif %}
+{% endblock %}

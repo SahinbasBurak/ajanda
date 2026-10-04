@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block icerik %}
+<div class="giris">
+  <h1>Kişiyi düzenle</h1>
+  <form method="post">
+    <label>Ad soyad <input name="ad" required maxlength="100" value="{{ k.ad }}"></label>
+    <label>Telefon <input type="tel" name="telefon" value="{{ k.telefon or '' }}"></label>
+    <label>E-posta <input type="email" name="eposta" value="{{ k.eposta or '' }}"></label>
+    <label>Not <textarea name="not_metni" rows="3" maxlength="300">{{ k.not_metni or '' }}</textarea></label>
+    <button class="ekle" type="submit">Kaydet</button>
+    <a href="{{ url_for('kisi_detay', kid=k.id) }}">Vazgeç</a>
+  </form>
+</div>
+{% endblock %}

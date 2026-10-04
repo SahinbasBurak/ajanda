@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block icerik %}
+<div class="giris">
+  <h1>Ajanda</h1>
+  <form method="post">
+    <label>Kullanıcı adı <input name="ad" required autocomplete="username"></label>
+    <label>Şifre <input type="password" name="sifre" required autocomplete="{{ 'new-password' if kayit else 'current-password' }}"></label>
+    {% if hata %}<p class="hata">{{ hata }}</p>{% endif %}
+    <button class="ekle" type="submit">{{ "Hesap oluştur" if kayit else "Giriş yap" }}</button>
+    <a href="{{ url_for('giris' if kayit else 'kayit') }}">{{ "Zaten hesabım var" if kayit else "Yeni hesap oluştur" }}</a>
+  </form>
+</div>
+{% endblock %}

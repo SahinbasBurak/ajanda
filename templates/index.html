@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block icerik %}
+<section class="ozet">
+  <div>
+    {% if ozet.sayi %}
+      <h2>Bugün {{ ozet.sayi }} randevun var</h2>
+      <p>{% if ozet.siradaki %}Sıradaki: {{ ozet.siradaki.saat }} · {{ ozet.siradaki.baslik }}{% if ozet.siradaki.kisi_ad %} ({{ ozet.siradaki.kisi_ad }}){% endif %}{% else %}Sıradaki saatli randevu yok.{% endif %}</p>
+    {% else %}
+      <h2>Bugün boş bir gün</h2>
+      <p>Yeni bir randevu eklemek için sağdaki düğmeyi kullan.</p>
+    {% endif %}
+  </div>
+  <button class="yenibtn" onclick="yeni()">+ Yeni randevu</button>
+</section>
+
+<div class="ust">
+  <strong>{{ "Son 30 gün ve yaklaşanlar" if gecmis else "Yaklaşan etkinlikler" }}</strong>
+  {% if gecmis %}<a href="{{ url_for('index') }}">Sadece yaklaşanları göster</a>
+  {% else %}<a href="{{ url_for('index', gecmis=1) }}">Geçmişi de göster</a>{% endif %}
+</div>
+
+{% for gun in gunler %}
+<section class="gun {{ 'gecti' if gun.gecti }}">
+  <h2>{{ gun.ad }} <small>{{ gun.tarih }}</small></h2>
+  {% for k in gun.kayitlar %}
+  <article class="kayit {{ 'yapildi' if k.yapildi }}">
+    <span class="saat">{{ k.saat or "—" }}</span>
+    <div class="orta">
+      {% if k.kisi_ad %}<a class="avatar" href="{{ url_for('kisi_detay', kid=k.kisi_id) }}" style="background:{{ kisi_renk(k.kisi_id) }}" title="{{ k.kisi_ad }}">{{ bas_harf(k.kisi_ad) }}</a>{% endif %}
+      <div>
+        <div class="baslik">{{ k.baslik }}
+          {% if k.durum %}<span class="etiket {{ 'gec' if k.durum == 'gelmedi' }} {{ 'iptal' if k.durum == 'iptal' }}">{{ durum_ad[k.durum] }}</span>
+          {% elif k.tarih < bugun_tarih %}<span class="etiket gec">Gecikti</span>
+          {% elif k.tarih == bugun_tarih %}<span class="etiket bugun">Bugün</span>{% endif %}
+        </div>
+        {% if k.not_metni %}<div class="not">{{ k.not_metni }}</div>{% endif %}
+        {% if k.kisi_ad or k.tekrar != 'yok' or k.hatirlat is not none %}
+        <div class="meta">
+          {{ k.kisi_ad or "" }}
+          {% if k.tekrar != 'yok' %}· {{ {'gunluk':'Her gün','haftalik':'Her hafta','aylik':'Her ay'}[k.tekrar] }}{% endif %}
+          {% if k.hatirlat is not none %}· Hatırlatma var{% endif %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="islem">
+      <form class="satirici" method="post" action="{{ url_for('durum_ata', eid=k.id, tarih=k.tarih.isoformat()) }}">
+        <select name="durum" class="durumsec" onchange="this.form.submit()" aria-label="Randevu durumu">
+          {% for v, ad in [('bekliyor','Bekliyor'),('geldi','Geldi'),('gelmedi','Gelmedi'),('iptal','İptal')] %}
+          <option value="{{ v }}" {{ 'selected' if (k.durum or 'bekliyor') == v }}>{{ ad }}</option>
+          {% endfor %}
+        </select>
+      </form>
+      <a class="dugme ikon" href="{{ url_for('duzenle', eid=k.id) }}" title="Düzenle" aria-label="Düzenle">✎</a>
+      <form class="satirici" method="post" action="{{ url_for('sil', eid=k.id) }}"
+            data-onay="{{ 'Tekrarlayan serinin tamamı silinsin mi?' if k.tekrar != 'yok' else 'Bu etkinlik silinsin mi?' }}"
+            onsubmit="return confirm(this.dataset.onay)">
+        <button class="ikon" type="submit" title="Sil" aria-label="Sil">✕</button>
+      </form>
+    </div>
+  </article>
+  {% endfor %}
+</section>
+{% else %}
+<div class="bos">Henüz etkinlik yok. Sağ üstteki <strong>+ Yeni randevu</strong> düğmesiyle ilkini ekle.</div>
+{% endfor %}
+{% endblock %}

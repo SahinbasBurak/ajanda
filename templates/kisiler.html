@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block icerik %}
+<div class="sayfa">
+  <aside>
+    <form method="post" action="{{ url_for('kisi_ekle') }}">
+      <label>Ad soyad <input name="ad" required maxlength="100"></label>
+      <label>Telefon <input type="tel" name="telefon" placeholder="05xx xxx xx xx"></label>
+      <label>E-posta <input type="email" name="eposta"></label>
+      <label>Not <textarea name="not_metni" rows="2" maxlength="300"></textarea></label>
+      <label style="display:flex;gap:8px;align-items:center">
+        <input type="checkbox" name="bilgi" value="1" checked style="width:auto"> Kaydedilince bilgilendirme gönder
+      </label>
+      <button class="ekle" type="submit">Kişi ekle</button>
+    </form>
+  </aside>
+  <main>
+    <div class="ust"><strong>Kişiler</strong></div>
+    {% for k in kisiler %}
+    <div class="kisisatir">
+      <a class="kart" href="{{ url_for('kisi_detay', kid=k.id) }}">
+      <span class="avatar" style="background:{{ kisi_renk(k.id) }}">{{ bas_harf(k.ad) }}</span> <strong>{{ k.ad }}</strong>
+      <div class="meta">{{ k.telefon or "Telefon yok" }}{% if k.eposta %} · {{ k.eposta }}{% endif %}</div>
+    </a>
+      <a class="kisisil" href="{{ url_for('kisi_duzenle', kid=k.id) }}">Düzenle</a>
+      <form class="satirici" method="post" action="{{ url_for('kisi_sil', kid=k.id) }}"
+            data-onay="{{ k.ad }} silinsin mi? Randevuları silinmez, kişisiz olarak kalır."
+            onsubmit="return confirm(this.dataset.onay)">
+        <button class="kisisil" type="submit" aria-label="{{ k.ad }} kişisini sil">Sil</button>
+      </form>
+    </div>
+    {% else %}
+    <div class="bos">Henüz kişi yok. Soldaki formdan ilkini ekle.</div>
+    {% endfor %}
+  </main>
+</div>
+{% endblock %}

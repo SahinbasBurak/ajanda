@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block icerik %}
+<div class="giris">
+  <h1>Etkinliği düzenle</h1>
+  <form method="post">
+    <label>Başlık <input name="baslik" required maxlength="120" value="{{ e.baslik }}"></label>
+    <label>Kişi
+        <select name="kisi_id">
+          <option value="">Kişi yok</option>
+          {% for p in kisiler %}<option value="{{ p.id }}" {{ 'selected' if e.kisi_id == p.id }}>{{ p.ad }}</option>{% endfor %}
+        </select>
+      </label>
+    <div class="satir">
+      <label>Tarih <input type="date" name="tarih" value="{{ e.tarih }}" required></label>
+      <label>Saat <input type="time" name="saat" value="{{ e.saat or '' }}"></label>
+    </div>
+    <div class="satir">
+      <label>Tekrar
+        <select name="tekrar">
+          {% for v, ad in [('yok','Tekrarlama'),('gunluk','Her gün'),('haftalik','Her hafta'),('aylik','Her ay')] %}
+          <option value="{{ v }}" {{ 'selected' if e.tekrar == v }}>{{ ad }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Bitiş tarihi <input type="date" name="bitis" value="{{ e.bitis or '' }}"></label>
+    </div>
+    <label>Hatırlatma (bildirim + kişiye e-posta)
+      <select name="hatirlat">
+        {% for v, ad in [('','Hatırlatma yok'),(0,'Tam zamanında'),(10,'10 dakika önce'),(30,'30 dakika önce'),(60,'1 saat önce'),(120,'2 saat önce'),(1440,'1 gün önce')] %}
+        <option value="{{ v }}" {{ 'selected' if (e.hatirlat is none and v == '') or (e.hatirlat is not none and v != '' and e.hatirlat == v) }}>{{ ad }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label>Not <textarea name="not_metni" rows="3" maxlength="500">{{ e.not_metni or '' }}</textarea></label>
+    {% if e.tekrar != 'yok' %}<p class="meta">Tekrarlayan etkinliklerde değişiklik serinin tamamına uygulanır.</p>{% endif %}
+    <button class="ekle" type="submit">Değişiklikleri kaydet</button>
+    <a href="{{ url_for('index') }}">Vazgeç</a>
+  </form>
+</div>
+{% endblock %}

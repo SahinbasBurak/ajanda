@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ajanda</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--zemin:#e9eef1;--kart:#fff;--murekkep:#13233a;--soluk:#5d6b7d;--vurgu:#f2a516;--cizgi:#c9d3db;--yesil:#2f7d5b}
+@media (prefers-color-scheme:dark){:root{--zemin:#0f1a2a;--kart:#172740;--murekkep:#e9eef1;--soluk:#93a2b5;--cizgi:#2a3d5a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--zemin);color:var(--murekkep);font:400 16px/1.5 "Schibsted Grotesk",system-ui,sans-serif}
+a{color:inherit}
+.kap{max-width:1000px;margin:0 auto;padding:24px 20px 64px}
+nav{display:flex;gap:18px;align-items:baseline;margin-bottom:28px;flex-wrap:wrap}
+nav .logo{font-size:34px;font-weight:900;letter-spacing:-.03em;text-decoration:none;margin-right:auto}
+nav a,nav button{color:var(--soluk);font:inherit;font-size:15px;background:none;border:0;cursor:pointer;padding:0}
+nav a.acik{color:var(--murekkep);font-weight:700;border-bottom:3px solid var(--vurgu)}
+.sayfa{display:grid;grid-template-columns:300px 1fr;gap:40px}
+@media(max-width:760px){.sayfa{grid-template-columns:1fr;gap:24px}}
+form{background:var(--kart);border:2px solid var(--murekkep);border-radius:6px;padding:18px;display:grid;gap:12px;align-self:start}
+aside form{position:sticky;top:20px}
+label{font-size:14px;font-weight:500;display:grid;gap:4px}
+input,textarea,select{font:inherit;color:inherit;background:var(--zemin);border:1px solid var(--cizgi);border-radius:4px;padding:8px 10px;width:100%}
+:focus-visible{outline:3px solid var(--vurgu);outline-offset:1px}
+.satir{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ekle{background:var(--vurgu);color:#13233a;border:0;border-radius:4px;font:700 16px inherit;padding:11px;cursor:pointer}
+.ust{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.ust a{color:var(--soluk);font-size:14px}
+.gun{margin-bottom:28px}
+.gun h2{margin:0;font-size:24px;font-weight:900;letter-spacing:-.02em;border-bottom:3px solid var(--murekkep);padding-bottom:6px;display:flex;justify-content:space-between;align-items:baseline}
+.gun h2 small{font:400 14px "Schibsted Grotesk",sans-serif;color:var(--soluk)}
+.gun.gecti h2{border-color:var(--cizgi);color:var(--soluk)}
+.kayit{display:grid;grid-template-columns:56px 1fr auto;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid var(--cizgi)}
+.saat{font-weight:700;font-variant-numeric:tabular-nums;color:var(--soluk)}
+.not,.meta{color:var(--soluk);font-size:14px}
+.yapildi .baslik{text-decoration:line-through;color:var(--soluk)}
+.islem{display:flex;gap:6px}
+.islem button{background:none;border:1px solid var(--cizgi);color:var(--murekkep);border-radius:4px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer}
+.islem .dugme{border:1px solid var(--cizgi);border-radius:4px;padding:4px 10px;font-size:13px;text-decoration:none}
+.islem .dugme:hover{border-color:var(--murekkep)}
+a.olay{text-decoration:none}
+.yapildi .islem .tik{background:var(--yesil);border-color:var(--yesil);color:#fff}
+form.satirici{all:unset}
+.bos{background:var(--kart);border:2px dashed var(--cizgi);border-radius:6px;padding:32px;text-align:center;color:var(--soluk)}
+.giris{max-width:360px;margin:8vh auto}
+.giris h1{font-size:44px;font-weight:900;letter-spacing:-.03em;margin:0 0 16px}
+.hata{color:#b3261e;font-size:14px;margin:0}
+.izgara{display:grid;grid-template-columns:repeat(7,1fr);border-left:1px solid var(--cizgi);border-top:1px solid var(--cizgi)}
+.gadi{padding:6px;font-weight:700;color:var(--soluk);font-size:13px;border-right:1px solid var(--cizgi);border-bottom:1px solid var(--cizgi)}
+.hucre{min-height:96px;padding:4px 6px;border-right:1px solid var(--cizgi);border-bottom:1px solid var(--cizgi);background:var(--kart);font-size:13px;overflow:hidden}
+.hucre.dis{background:transparent;color:var(--soluk)}
+.hucre.bugun b{background:var(--vurgu);color:#13233a;border-radius:3px;padding:0 5px}
+.olay{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.olay.yapildi{text-decoration:line-through;color:var(--soluk)}
+@media(max-width:600px){.hucre{min-height:64px;padding:2px}.olay{font-size:11px}}
+.bilgi{background:var(--kart);border-left:4px solid var(--vurgu);padding:10px 14px;margin:0 0 12px;border-radius:4px}
+.kart{display:block;background:var(--kart);border:1px solid var(--cizgi);border-radius:6px;padding:12px 14px;margin-bottom:10px;text-decoration:none}
+.kart:hover{border-color:var(--murekkep)}
+.etiket{font-size:12px;background:var(--yesil);color:#fff;border-radius:3px;padding:1px 6px}
+.ozet{background:var(--murekkep);color:#e9eef1;border-radius:10px;padding:22px 24px;margin-bottom:26px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+@media(prefers-color-scheme:dark){.ozet{background:var(--kart);border:1px solid var(--cizgi)}}
+.ozet h2{margin:0;font-size:30px;font-weight:900;letter-spacing:-.02em;line-height:1.1}
+.ozet p{margin:4px 0 0;color:#b9c5d3}
+.yenibtn{background:var(--vurgu);color:#13233a;border:0;border-radius:6px;font:700 15px "Schibsted Grotesk",sans-serif;padding:9px 16px;cursor:pointer}
+.yenibtn:hover{filter:brightness(.95)}
+.avatar{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;color:#fff;font-weight:700;font-size:13px;flex:none;text-decoration:none;vertical-align:middle}
+dialog{border:2px solid var(--murekkep);border-radius:8px;padding:0;background:var(--kart);color:var(--murekkep);width:min(440px,92vw)}
+dialog::backdrop{background:rgba(10,20,35,.55)}
+dialog form{border:0;border-radius:0}
+.vazgec{background:none;border:1px solid var(--cizgi);border-radius:4px;color:var(--murekkep);cursor:pointer;font:inherit}
+.gun{border-left:3px solid var(--cizgi);padding-left:18px;position:relative;margin-left:8px}
+.gun::before{content:"";position:absolute;left:-10px;top:8px;width:15px;height:15px;border-radius:50%;background:var(--vurgu);border:3px solid var(--zemin)}
+.gun.gecti::before{background:var(--cizgi)}
+.orta{display:flex;gap:10px;align-items:flex-start}
+.etiket.gec{background:#b3261e}
+.etiket.bugun{background:var(--vurgu);color:#13233a}
+.islem .ikon{width:32px;padding:4px 0;text-align:center}
+.islem a.ikon{color:var(--murekkep)}
+.hucre{cursor:pointer}
+.hucre:hover{outline:2px solid var(--vurgu);outline-offset:-2px}
+.olay{border-left:3px solid var(--k,var(--cizgi));padding-left:4px;border-radius:2px;background:color-mix(in srgb,var(--k,transparent) 12%,transparent)}
+.kisisatir{display:flex;gap:8px;align-items:stretch;margin-bottom:10px}
+.kisisatir .kart{flex:1;margin:0}
+.kisisil{height:100%;background:var(--kart);border:1px solid var(--cizgi);border-radius:6px;color:var(--soluk);font:inherit;font-size:14px;padding:0 14px;cursor:pointer}
+.kisisil:hover{border-color:#b3261e;color:#b3261e}
+.aramaform input{width:150px;padding:4px 10px;font-size:14px}
+a.kisisil{display:grid;place-items:center;text-decoration:none}
+.durumsec{width:auto;padding:3px 6px;font-size:13px}
+.etiket.iptal{background:var(--soluk)}
+</style>
+</head>
+<body>
+<div class="kap">
+{% if session.uid %}
+<nav>
+  <a class="logo" href="{{ url_for('index') }}">Ajanda</a>
+  <button id="bildirim" hidden>Bildirimleri aç</button>
+  <a href="{{ url_for('index') }}" class="{{ 'acik' if request.endpoint == 'index' }}">Liste</a>
+  <a href="{{ url_for('takvim') }}" class="{{ 'acik' if request.endpoint == 'takvim' }}">Takvim</a>
+  <a href="{{ url_for('kisiler') }}" class="{{ 'acik' if request.endpoint in ('kisiler', 'kisi_detay') }}">Kişiler</a>
+  <form class="satirici aramaform" action="{{ url_for('ara') }}" method="get"><input type="search" name="q" placeholder="Ara…" aria-label="Ara" value="{{ request.args.get('q', '') }}"></form>
+  <button class="yenibtn" onclick="yeni()">+ Yeni randevu</button>
+  <a href="{{ url_for('cikis') }}">Çıkış yap</a>
+</nav>
+{% endif %}
+{% for m in get_flashed_messages() %}<p class="bilgi">{{ m }}</p>{% endfor %}
+{% block icerik %}{% endblock %}
+</div>
+{% if session.uid %}
+<dialog id="yeni">
+  <form method="post" action="{{ url_for('ekle') }}">
+    <strong style="font-size:20px">Yeni randevu</strong>
+    <label>Başlık <input name="baslik" required maxlength="120" placeholder="Örn. Diş randevusu"></label>
+    <label>Kişi
+      <select name="kisi_id">
+        <option value="">Kişi yok</option>
+        {% for p in kisiler_hepsi %}<option value="{{ p.id }}">{{ p.ad }}</option>{% endfor %}
+      </select>
+    </label>
+    <div class="satir">
+      <label>Tarih <input type="date" name="tarih" value="{{ bugun_iso }}" required></label>
+      <label>Saat <input type="time" name="saat"></label>
+    </div>
+    <div class="satir">
+      <label>Tekrar
+        <select name="tekrar">
+          <option value="yok">Tekrarlama</option><option value="gunluk">Her gün</option>
+          <option value="haftalik">Her hafta</option><option value="aylik">Her ay</option>
+        </select>
+      </label>
+      <label>Bitiş tarihi <input type="date" name="bitis"></label>
+    </div>
+    <label>Hatırlatma (bildirim + kişiye e-posta)
+      <select name="hatirlat">
+        <option value="">Hatırlatma yok</option><option value="0">Tam zamanında</option>
+        <option value="10">10 dakika önce</option><option value="30">30 dakika önce</option>
+        <option value="60">1 saat önce</option><option value="120">2 saat önce</option><option value="1440">1 gün önce</option>
+      </select>
+    </label>
+    <label>Not <textarea name="not_metni" rows="2" maxlength="500"></textarea></label>
+    <div class="satir">
+      <button type="button" class="vazgec" onclick="this.closest('dialog').close()">Vazgeç</button>
+      <button class="ekle" type="submit">Kaydet</button>
+    </div>
+  </form>
+</dialog>
+<script>
+const dlg=document.getElementById("yeni");
+function yeni(tarih,kisi){
+  if(tarih)dlg.querySelector("[name=tarih]").value=tarih;
+  if(kisi)dlg.querySelector("[name=kisi_id]").value=kisi;
+  dlg.showModal();
+}
+const sorgu=new URLSearchParams(location.search);
+if(sorgu.get("kisi"))yeni(null,sorgu.get("kisi"));
+const b=document.getElementById("bildirim");
+if("Notification" in window){
+  if(Notification.permission==="default"){b.hidden=false;b.onclick=()=>Notification.requestPermission().then(()=>b.hidden=true);}
+  const kontrol=async()=>{
+    if(Notification.permission!=="granted")return;
+    const liste=await (await fetch("{{ url_for('api_hatirlat') }}")).json();
+    const simdi=Date.now();
+    for(const e of liste){
+      const t=new Date(e.zaman).getTime(), anahtar="h"+e.id+e.zaman;
+      if(simdi>=t-e.dk*60000 && simdi<t+3600000 && !localStorage.getItem(anahtar)){
+        localStorage.setItem(anahtar,1);
+        new Notification(e.baslik,{body:e.dk?e.dk+" dakika sonra":"Şimdi"});
+      }
+    }
+  };
+  kontrol();setInterval(kontrol,30000);
+}
+</script>
+{% endif %}
+</body>
+</html>
